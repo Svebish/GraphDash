@@ -1,0 +1,146 @@
+Technical Specification: Collaborative Graphing Web Application
+Version: 1.0
+Date: June 10, 2025
+Author: Gemini
+Status: Draft
+Based On: PRD: Collaborative Graphing Web Application (Version 1.0)
+
+1. Introduction
+
+1.1. Purpose
+This document provides a detailed technical blueprint for the engineering team to build the Collaborative Graphing Web Application. It translates the functional and non-functional requirements outlined in the PRD into a concrete implementation plan, covering system architecture, database design, API specifications, and frontend component structure.
+
+1.2. Scope
+The scope of this specification is limited to the features defined in the PRD v1.0. This includes user authentication, the user dashboard, a performant graph editor powered by React Flow, and static graph sharing. Features listed as "Out of Scope for V1" in the PRD, such as live collaboration, are not covered here.
+
+2. System Architecture
+
+The application will follow a modern client-server architecture, leveraging a JAMstack approach for performance and scalability.
+
+Frontend (Client): A single-page application (SPA) built with React and Vite. It will be responsible for all UI rendering and client-side logic. It will communicate directly with the Supabase backend.
+
+Backend (Server): Supabase will serve as the all-in-one backend-as-a-service (BaaS). We will use its integrated services:
+- Supabase Auth: For user management and authentication.
+- Supabase Database (PostgreSQL): For data persistence.
+- Supabase APIs: Auto-generated PostgREST APIs for database interaction and Supabase Edge Functions for custom server-side logic (e.g., admin tasks).
+
+This architecture minimizes backend development overhead while providing a robust, secure, and scalable foundation.
+
+3. Backend Implementation (Supabase)
+
+3.1. Database Schema
+The following tables will be created in the Supabase PostgreSQL database.
+
+Table: profiles
+(Supabase auth.users table is used for authentication data; this table stores public profile info linked to it.)
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| id | uuid | Primary Key, Foreign Key to auth.users.id | The user's unique identifier. |
+| username | text | Unique, Not Null | The user's public username. |
+| created_at | timestamp with time zone | Default now() | Timestamp of profile creation. |
+
+Table: graphs
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| id | uuid | Primary Key, Default gen_random_uuid() | Unique identifier for the graph. |
+| owner_id | uuid | Foreign Key to profiles.id | The user who owns this graph. |
+| title | text | Not Null | The title of the graph. |
+| data | jsonb | Not Null | The complete React Flow state (nodes, edges, viewport). |   
+| created_at | timestamp with time zone | Default now() | Timestamp of graph creation. |
+| updated_at | timestamp with time zone | Default now() | Timestamp of last modification. |
+
+Table: contacts
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| user_id | uuid | Primary Key, Foreign Key to profiles.id | The user who owns the contact list. |
+| contact_id | uuid | Primary Key, Foreign Key to profiles.id | The user who is in the contact list. |
+
+Table: shared_graphs
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| id | uuid | Primary Key, Default gen_random_uuid() | Unique ID for the sharing record. |
+| graph_id | uuid | Foreign Key to graphs.id | The graph being shared. |
+| owner_id | uuid | Foreign Key to profiles.id | The user who owns and shared the graph. |
+| recipient_id | uuid | Foreign Key to profiles.id | The user receiving the shared graph. |
+| shared_at | timestamp with time zone | Default now() | Timestamp when the graph was shared. |
+| graph_data_snapshot | jsonb | Not Null | A static copy of the graph's data at the time of sharing. |
+
+3.2. Row Level Security (RLS) Policies
+RLS will be enabled on all tables to enforce data access rules.
+
+profiles:
+- SELECT: All authenticated users can view all profiles (to enable searching for contacts).
+- INSERT/UPDATE: Users can only insert or update their own profile.
+
+graphs:
+- SELECT/UPDATE/DELETE: Users can only access graphs where owner_id matches their authenticated user.id.
+
+contacts:
+- SELECT/INSERT/DELETE: Users can only access contact entries where user_id matches their authenticated user.id.
+
+shared_graphs:
+- SELECT: Users can view records where their user.id matches recipient_id.
+- INSERT: Users can insert records where their user.id matches owner_id.
+- DELETE: Users can delete records they received (i.e., where recipient_id matches their user.id).
+
+3.3. API and Server-Side Logic
+Standard CRUD: The default Supabase PostgREST API will handle most CRUD operations on the tables, governed by the RLS policies.
+
+Superadmin Functions (admin user):
+The admin user (username: admin, password: ratchurch) will not have its special powers defined by RLS, as this is insecure.
+Instead, we will create Supabase Edge Functions for admin tasks (createUser, resetUserPassword).
+The frontend will call these functions. Inside the Edge Function, we will first verify that the calling user is the designated admin (auth.uid() === ADMIN_USER_ID) before using the supabase-admin client to perform privileged operations.
+
+4. Frontend Implementation (React)
+
+4.1. Core Libraries & Setup
+- Build Tool: Vite
+- Framework: React 18+
+- UI: shadcn/ui and Tailwind CSS
+- Graphing: reactflow
+- Backend Client: @supabase/supabase-js
+- State Management: zustand for global state (user session, auth status). React Flow's internal provider will manage graph state within the editor.
+
+4.2. Project Structure
+/src
+├── /components
+│   ├── /auth
+│   │   └── UserAuthForm.tsx
+│   ├── /dashboard
+│   │   ├── GraphCard.tsx
+│   │   └── CreateGraphButton.tsx
+│   ├── /editor
+│   │   ├── GraphEditor.tsx
+│   │   ├── Toolbar.tsx
+│   │   └── ShareModal.tsx
+│   └── /ui  (shadcn components)
+├── /pages
+│   ├── DashboardPage.tsx
+│   ├── EditorPage.tsx
+│   ├── LoginPage.tsx
+│   └── AdminPage.tsx
+├── /lib
+│   ├── supabase.ts
+│   └── utils.ts (shadcn helper)
+├── /hooks
+│   └── useAuth.ts
+├── /store
+│   └── useUserStore.ts (Zustand store)
+└── App.tsx
+
+4.3. Component Breakdown
+- UserAuthForm.tsx: A single component to handle both Sign Up and Sign In, using shadcn/ui Card, Input, and Button components.
+- DashboardPage.tsx: Fetches and displays a user's graphs and shared graphs. Uses GraphCard to render each item. Contains tabs for "My Graphs", "Shared With Me", and "Contacts".
+- GraphEditor.tsx: The core of the application. Implements ReactFlowProvider and the ReactFlow component. It will include controls for pan, zoom, and a toolbar for adding nodes. It will handle fetching the graph data and auto-saving changes to Supabase.
+- ShareModal.tsx: A shadcn/ui Dialog that allows the user to search their contacts and share the active graph. On submit, it calls the Supabase API to create a new record in the shared_graphs table.
+- AdminPage.tsx: A simple view, accessible only to the admin, with forms for creating new users and resetting passwords. These forms will invoke the secure Supabase Edge Functions.
+
+5. Performance & Responsiveness
+
+Performance: To meet the goal of handling 1,000+ nodes, we will implement reactflow's performance optimizations. The proOptions prop will be used to activate paid features if needed, but we will start with standard optimizations like only rendering nodes in the viewport. Debouncing will be used for the auto-save feature to prevent excessive API calls.
+
+Responsiveness: All layouts will be built mobile-first using Tailwind CSS's responsive prefixes. The graph editor on smaller screens will hide less critical UI elements to maximize canvas space, potentially moving the toolbar to a collapsible sidebar. shadcn/ui components are inherently responsive.

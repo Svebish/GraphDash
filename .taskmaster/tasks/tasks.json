@@ -1,0 +1,183 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Setup Project Repository and Initial Configuration",
+      "description": "Initialize the project repository with Vite, React 18+, and required dependencies.",
+      "details": "Create a new Vite project with React 18+ as the framework. Install and configure shadcn/ui, Tailwind CSS, reactflow, @supabase/supabase-js, and zustand. Set up basic project structure as per PRD.",
+      "testStrategy": "Verify project builds and runs without errors. Check all dependencies are installed and configured.",
+      "priority": "high",
+      "dependencies": [],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 2,
+      "title": "Configure Supabase Backend and Database Schema",
+      "description": "Set up Supabase project and define required database tables.",
+      "details": "Create a new Supabase project. Define tables: profiles, graphs, contacts, shared_graphs as per PRD schema. Enable Row Level Security (RLS) and set up initial policies.",
+      "testStrategy": "Verify tables are created and RLS policies are enforced. Test basic CRUD operations via Supabase dashboard.",
+      "priority": "high",
+      "dependencies": [],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 3,
+      "title": "Implement User Authentication and Profile Management",
+      "description": "Integrate Supabase Auth and manage user profiles.",
+      "details": "Use Supabase Auth for user sign-up/sign-in. Create profiles table and link to auth.users. Implement profile CRUD with RLS. Build UserAuthForm component for auth flows.",
+      "testStrategy": "Test user registration, login, and profile management. Verify RLS prevents unauthorized access.",
+      "priority": "high",
+      "dependencies": [
+        1,
+        2
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 4,
+      "title": "Develop Dashboard Page and Graph Listing",
+      "description": "Build the dashboard to display user graphs and shared graphs.",
+      "details": "Create DashboardPage component. Fetch and display user's graphs and shared graphs using Supabase API. Implement tabs for 'My Graphs', 'Shared With Me', and 'Contacts'. Use GraphCard for each item.",
+      "testStrategy": "Test dashboard renders user graphs and shared graphs. Verify tab navigation and data fetching.",
+      "priority": "medium",
+      "dependencies": [
+        1,
+        2,
+        3
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 5,
+      "title": "Implement Graph Editor with React Flow",
+      "description": "Build the core graph editor using React Flow.",
+      "details": "Create GraphEditor component with ReactFlowProvider. Implement controls for pan, zoom, and node/edge manipulation. Fetch and save graph data to Supabase. Handle auto-saving with debouncing.",
+      "testStrategy": "Test graph creation, editing, and auto-saving. Verify performance with large graphs (1000+ nodes).",
+      "priority": "high",
+      "dependencies": [
+        1,
+        2,
+        3
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 6,
+      "title": "Develop Toolbar and Editor UI Components",
+      "description": "Build editor toolbar and UI enhancements.",
+      "details": "Create Toolbar component for graph editor. Add controls for adding nodes, edges, and basic graph operations. Ensure UI is responsive and mobile-friendly using Tailwind CSS.",
+      "testStrategy": "Test toolbar functionality and responsiveness. Verify all controls work as expected.",
+      "priority": "medium",
+      "dependencies": [
+        1,
+        5
+      ],
+      "status": "done",
+      "subtasks": []
+    },
+    {
+      "id": 7,
+      "title": "Implement Contacts Management",
+      "description": "Enable users to manage their contacts.",
+      "details": "Build UI for adding, viewing, and removing contacts. Use contacts table and enforce RLS. Integrate with dashboard and sharing features.",
+      "testStrategy": "Test contact management: add, view, and remove contacts. Verify RLS prevents unauthorized access.",
+      "priority": "medium",
+      "dependencies": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "status": "in-progress",
+      "subtasks": []
+    },
+    {
+      "id": 8,
+      "title": "Develop Graph Sharing Functionality",
+      "description": "Implement static graph sharing between users.",
+      "details": "Create ShareModal component. Allow users to search contacts and share graphs. Insert records into shared_graphs table with graph_data_snapshot. Enforce RLS.",
+      "testStrategy": "Test sharing flow: select graph, choose contact, and verify shared graph appears in recipient's dashboard.",
+      "priority": "medium",
+      "dependencies": [
+        1,
+        2,
+        3,
+        4,
+        7
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 9,
+      "title": "Build Admin Page and Edge Functions",
+      "description": "Develop admin interface and secure server-side functions.",
+      "details": "Create AdminPage component accessible only to admin. Implement forms for user creation and password reset. Develop Supabase Edge Functions for admin tasks. Verify admin identity before executing privileged operations.",
+      "testStrategy": "Test admin-only access. Verify Edge Functions execute only for admin and perform intended actions.",
+      "priority": "medium",
+      "dependencies": [
+        1,
+        2,
+        3
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 10,
+      "title": "Implement Performance Optimizations",
+      "description": "Optimize graph editor for large datasets.",
+      "details": "Configure reactflow proOptions for performance. Implement viewport-based rendering and debouncing for auto-save. Monitor and optimize for 1000+ nodes.",
+      "testStrategy": "Test editor performance with large graphs. Verify auto-save does not cause excessive API calls.",
+      "priority": "medium",
+      "dependencies": [
+        1,
+        5
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 11,
+      "title": "Ensure Responsive and Accessible UI",
+      "description": "Make the application fully responsive and accessible.",
+      "details": "Apply mobile-first design with Tailwind CSS. Hide less critical UI elements on small screens. Ensure all components are accessible and keyboard-navigable.",
+      "testStrategy": "Test on various screen sizes. Verify UI adapts and remains accessible.",
+      "priority": "medium",
+      "dependencies": [
+        1,
+        6
+      ],
+      "status": "pending",
+      "subtasks": []
+    },
+    {
+      "id": 12,
+      "title": "Final Integration and End-to-End Testing",
+      "description": "Integrate all components and perform comprehensive testing.",
+      "details": "Assemble all pages and components. Test end-to-end flows: auth, dashboard, editor, sharing, admin. Validate all features against PRD requirements.",
+      "testStrategy": "Perform manual and automated end-to-end tests. Verify all user stories and edge cases are covered.",
+      "priority": "high",
+      "dependencies": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "status": "pending",
+      "subtasks": []
+    }
+  ]
+}

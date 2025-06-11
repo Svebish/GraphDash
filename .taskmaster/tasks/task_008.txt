@@ -1,0 +1,11 @@
+# Task ID: 8
+# Title: Develop Graph Sharing Functionality
+# Status: pending
+# Dependencies: 1, 2, 3, 4, 7
+# Priority: medium
+# Description: Implement static graph sharing between users.
+# Details:
+Create ShareModal component. Allow users to search contacts and share graphs. Insert records into shared_graphs table with graph_data_snapshot. Enforce RLS.
+
+# Test Strategy:
+Test sharing flow: select graph, choose contact, and verify shared graph appears in recipient's dashboard.

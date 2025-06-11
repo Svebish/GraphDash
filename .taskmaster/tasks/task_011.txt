@@ -1,0 +1,11 @@
+# Task ID: 11
+# Title: Ensure Responsive and Accessible UI
+# Status: pending
+# Dependencies: 1, 6
+# Priority: medium
+# Description: Make the application fully responsive and accessible.
+# Details:
+Apply mobile-first design with Tailwind CSS. Hide less critical UI elements on small screens. Ensure all components are accessible and keyboard-navigable.
+
+# Test Strategy:
+Test on various screen sizes. Verify UI adapts and remains accessible.

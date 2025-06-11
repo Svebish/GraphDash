@@ -1,0 +1,11 @@
+# Task ID: 1
+# Title: Setup Project Repository and Initial Configuration
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Initialize the project repository with Vite, React 18+, and required dependencies.
+# Details:
+Create a new Vite project with React 18+ as the framework. Install and configure shadcn/ui, Tailwind CSS, reactflow, @supabase/supabase-js, and zustand. Set up basic project structure as per PRD.
+
+# Test Strategy:
+Verify project builds and runs without errors. Check all dependencies are installed and configured.

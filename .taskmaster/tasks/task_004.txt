@@ -1,0 +1,11 @@
+# Task ID: 4
+# Title: Develop Dashboard Page and Graph Listing
+# Status: done
+# Dependencies: 1, 2, 3
+# Priority: medium
+# Description: Build the dashboard to display user graphs and shared graphs.
+# Details:
+Create DashboardPage component. Fetch and display user's graphs and shared graphs using Supabase API. Implement tabs for 'My Graphs', 'Shared With Me', and 'Contacts'. Use GraphCard for each item.
+
+# Test Strategy:
+Test dashboard renders user graphs and shared graphs. Verify tab navigation and data fetching.

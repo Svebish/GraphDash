@@ -1,0 +1,11 @@
+# Task ID: 2
+# Title: Configure Supabase Backend and Database Schema
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Set up Supabase project and define required database tables.
+# Details:
+Create a new Supabase project. Define tables: profiles, graphs, contacts, shared_graphs as per PRD schema. Enable Row Level Security (RLS) and set up initial policies.
+
+# Test Strategy:
+Verify tables are created and RLS policies are enforced. Test basic CRUD operations via Supabase dashboard.

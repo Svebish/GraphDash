@@ -1,0 +1,11 @@
+# Task ID: 7
+# Title: Implement Contacts Management
+# Status: in-progress
+# Dependencies: 1, 2, 3, 4
+# Priority: medium
+# Description: Enable users to manage their contacts.
+# Details:
+Build UI for adding, viewing, and removing contacts. Use contacts table and enforce RLS. Integrate with dashboard and sharing features.
+
+# Test Strategy:
+Test contact management: add, view, and remove contacts. Verify RLS prevents unauthorized access.

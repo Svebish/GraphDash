@@ -1,0 +1,11 @@
+# Task ID: 3
+# Title: Implement User Authentication and Profile Management
+# Status: done
+# Dependencies: 1, 2
+# Priority: high
+# Description: Integrate Supabase Auth and manage user profiles.
+# Details:
+Use Supabase Auth for user sign-up/sign-in. Create profiles table and link to auth.users. Implement profile CRUD with RLS. Build UserAuthForm component for auth flows.
+
+# Test Strategy:
+Test user registration, login, and profile management. Verify RLS prevents unauthorized access.

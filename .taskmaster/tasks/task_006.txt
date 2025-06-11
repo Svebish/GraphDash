@@ -1,0 +1,11 @@
+# Task ID: 6
+# Title: Develop Toolbar and Editor UI Components
+# Status: done
+# Dependencies: 1, 5
+# Priority: medium
+# Description: Build editor toolbar and UI enhancements.
+# Details:
+Create Toolbar component for graph editor. Add controls for adding nodes, edges, and basic graph operations. Ensure UI is responsive and mobile-friendly using Tailwind CSS.
+
+# Test Strategy:
+Test toolbar functionality and responsiveness. Verify all controls work as expected.
